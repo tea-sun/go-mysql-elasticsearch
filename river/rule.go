@@ -42,7 +42,6 @@ func newDefaultRule(schema string, table string) *Rule {
 
 	lowerTable := strings.ToLower(table)
 	r.Index = lowerTable
-	r.Type = lowerTable
 
 	r.FieldMapping = make(map[string]string)
 
@@ -56,10 +55,6 @@ func (r *Rule) prepare() error {
 
 	if len(r.Index) == 0 {
 		r.Index = r.Table
-	}
-
-	if len(r.Type) == 0 {
-		r.Type = r.Index
 	}
 
 	// ES must use a lower-case Type
