@@ -1,2 +1,4 @@
 bin
 .idea
+var
+etc/river_*.toml
