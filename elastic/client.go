@@ -223,10 +223,6 @@ func (c *Client) Do(method string, url string, body map[string]interface{}) (*Re
 		return nil, errors.Trace(err)
 	}
 
-	if resp.StatusCode != 200 {
-		return nil, errors.Trace(errors.New(string(data)))
-	}
-
 	ret := new(Response)
 	ret.Code = resp.StatusCode
 
@@ -251,16 +247,19 @@ func (c *Client) DoBulk(url string, items []*BulkRequest) (*BulkResponse, error)
 	if err != nil {
 		return nil, errors.Trace(err)
 	}
-
 	defer resp.Body.Close()
-
-	ret := new(BulkResponse)
-	ret.Code = resp.StatusCode
 
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, errors.Trace(err)
 	}
+
+	if resp.StatusCode != 200 {
+		return nil, errors.Trace(errors.New(string(data)))
+	}
+
+	ret := new(BulkResponse)
+	ret.Code = resp.StatusCode
 
 	if len(data) > 0 {
 		err = json.Unmarshal(data, &ret)
