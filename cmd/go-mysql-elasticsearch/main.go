@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/go-mysql-org/go-mysql-elasticsearch/pkg/log"
 	"os"
 	"os/signal"
 	"runtime"
@@ -9,7 +10,6 @@ import (
 
 	"github.com/go-mysql-org/go-mysql-elasticsearch/river"
 	"github.com/juju/errors"
-	"github.com/siddontang/go-log/log"
 )
 
 var configFile = flag.String("config", "./etc/river.toml", "go-mysql-elasticsearch config file")

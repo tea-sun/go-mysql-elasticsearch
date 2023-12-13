@@ -2,6 +2,8 @@ package river
 
 import (
 	"bytes"
+	"github.com/go-mysql-org/go-mysql-elasticsearch/pkg/ioutil"
+	"github.com/go-mysql-org/go-mysql-elasticsearch/pkg/log"
 	"os"
 	"path"
 	"sync"
@@ -10,8 +12,6 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/go-mysql-org/go-mysql/mysql"
 	"github.com/juju/errors"
-	"github.com/siddontang/go-log/log"
-	"github.com/siddontang/go/ioutil2"
 )
 
 type masterInfo struct {
@@ -75,7 +75,7 @@ func (m *masterInfo) Save(pos mysql.Position) error {
 	e.Encode(m)
 
 	var err error
-	if err = ioutil2.WriteFileAtomic(m.filePath, buf.Bytes(), 0644); err != nil {
+	if err = ioutil.WriteFileAtomic(m.filePath, buf.Bytes(), 0644); err != nil {
 		log.Errorf("canal save master info to file %s err %v", m.filePath, err)
 	}
 

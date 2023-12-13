@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/go-mysql-org/go-mysql-elasticsearch/pkg/log"
 	"reflect"
 	"strings"
 	"time"
@@ -14,7 +15,6 @@ import (
 	"github.com/go-mysql-org/go-mysql/replication"
 	"github.com/go-mysql-org/go-mysql/schema"
 	"github.com/juju/errors"
-	"github.com/siddontang/go-log/log"
 )
 
 const (
@@ -468,6 +468,11 @@ func (r *River) getParentID(rule *Rule, row []interface{}, columnName string) (s
 func (r *River) doBulk(reqs []*elastic.BulkRequest) error {
 	if len(reqs) == 0 {
 		return nil
+	}
+
+	if log.GetLevel() == log.LevelDebug {
+		marshal, _ := json.Marshal(reqs)
+		log.Debugf("doBulk: %s", string(marshal))
 	}
 
 	if resp, err := r.es.Bulk(reqs); err != nil {
