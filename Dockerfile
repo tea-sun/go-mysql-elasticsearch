@@ -18,6 +18,9 @@ FROM mysql:latest as prod
 
 WORKDIR /root/
 
+# 挂载配置目录
+VOLUME /root/etc
+
 # 从builder阶段拷贝go程序
 COPY --from=builder /opt/go-mysql-elasticsearch/bin .
 # 从builder阶段拷贝配置
