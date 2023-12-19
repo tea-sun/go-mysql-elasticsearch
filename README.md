@@ -2,6 +2,35 @@ go-mysql-elasticsearch is a service syncing your MySQL data into Elasticsearch a
 
 It uses `mysqldump` to fetch the origin data at first, then syncs data incrementally with binlog.
 
+## 调整
+1. 更新依赖包
+2. 重写Dockerfile，因为mariadb中的mysqldump对mysql8有兼容行问题
+3. 对日志做了调整
+
+```shell
+# 运行
+docker run --rm \
+  -v ./etc:/app/etc \
+  -v mysql2es:/app \
+  mysql2es -log_level debug
+
+# 多平台构建
+docker buildx create --driver=docker-container --name=container
+
+docker buildx build \
+  --builder=container  
+  --tag=mysql2es 
+  --target=prod 
+  --platform=linux/arm64,linux/amd64 .
+  
+# 清理none镜像
+docker rmi $(docker images -f dangling=true -q)
+
+# 导出可执行文件
+docker build --target=binary --output=. --platform=darwin/arm64 .
+```
+
+
 ## Call for Committer/Maintainer
 Sorry that I have no enough time to maintain this project wholly, if you like this project and want to help me improve it continuously, please contact me through email (siddontang@gmail.com).
 
