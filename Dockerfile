@@ -30,7 +30,9 @@ COPY --from=build /bin/go-mysql-elasticsearch .
 FROM --platform=$TARGETPLATFORM  ubuntu:22.04 as prod
 
 # 安装mysql客户端
-RUN apt update && apt install -y mysql-client && rm -rf /var/lib/apt/lists/*
+RUN apt update && \
+    apt install -y mysql-client && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
