@@ -33,7 +33,7 @@ type ClientConfig struct {
 	Password string
 }
 
-// NewClient creates the Cient with configuration.
+// NewClient creates the Client with configuration.
 func NewClient(conf *ClientConfig) *Client {
 	c := new(Client)
 

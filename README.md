@@ -13,14 +13,22 @@ docker run --rm \
   -v ./etc:/app/etc \
   -v mysql2es:/app \
   mysql2es -log_level debug
+  
+# docker
+docker run --rm \
+  --net elastic7 \
+  --name mysql2es \
+  -v ./etc:/app/etc \
+  -v mysql2es:/app \
+  mysql2es -log_level debug -config ./etc/river.toml
 
 # 多平台构建
 docker buildx create --driver=docker-container --name=container
 
 docker buildx build \
-  --builder=container  
-  --tag=mysql2es 
-  --target=prod 
+  --builder=container  \
+  --tag=mysql2es \
+  --target=prod \
   --platform=linux/arm64,linux/amd64 .
   
 # 清理none镜像
