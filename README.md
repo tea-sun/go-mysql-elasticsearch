@@ -16,7 +16,6 @@ docker run --rm \
   
 # docker
 docker run --rm \
-  --net elastic7 \
   --name mysql2es \
   -v ./etc:/app/etc \
   -v mysql2es:/app \
