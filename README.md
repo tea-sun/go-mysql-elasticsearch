@@ -11,22 +11,22 @@ It uses `mysqldump` to fetch the origin data at first, then syncs data increment
 # 运行
 docker run --rm \
   -v ./etc:/app/etc \
-  -v mysql2es:/app \
-  mysql2es -log_level debug
+  -v go-mysql-elasticsearch:/app \
+  go-mysql-elasticsearch -log_level debug
   
 # docker
 docker run --rm \
-  --name mysql2es \
+  --name go-mysql-elasticsearch \
   -v ./etc:/app/etc \
-  -v mysql2es:/app \
-  mysql2es -log_level debug -config ./etc/river.toml
+  -v go-mysql-elasticsearch:/app \
+  go-mysql-elasticsearch -log_level debug -config ./etc/river.toml
 
 # 多平台构建
 docker buildx create --driver=docker-container --name=container
 
 docker buildx build \
   --builder=container  \
-  --tag=mysql2es \
+  --tag=go-mysql-elasticsearch \
   --target=prod \
   --platform=linux/arm64,linux/amd64 .
   
@@ -37,7 +37,7 @@ docker rmi $(docker images -f dangling=true -q)
 docker build --target=binary --output=. --platform=darwin/arm64 .
 ```
 ## Docker Hub
-https://hub.docker.com/repository/docker/kuhufu/mysql2es
+https://hub.docker.com/repository/docker/kuhufu/go-mysql-elasticsearch
 
 ## Call for Committer/Maintainer
 Sorry that I have no enough time to maintain this project wholly, if you like this project and want to help me improve it continuously, please contact me through email (siddontang@gmail.com).
