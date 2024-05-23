@@ -7,35 +7,43 @@ It uses `mysqldump` to fetch the origin data at first, then syncs data increment
 2. 重写Dockerfile，因为mariadb中的mysqldump对mysql8有兼容行问题
 3. 对日志做了调整
 
+## Docker启动
+
 ```shell
-# 运行
+docker run kuhufu/go-mysql-elasticsearch
+```
+
+挂载配置文件
+```shell
 docker run --rm \
-  -v ./etc:/app/etc \
-  -v go-mysql-elasticsearch:/app \
-  go-mysql-elasticsearch -log_level debug
-  
-# docker
-docker run --rm \
-  --name go-mysql-elasticsearch \
-  -v ./etc:/app/etc \
-  -v go-mysql-elasticsearch:/app \
-  go-mysql-elasticsearch -log_level debug -config ./etc/river.toml
+--name go-mysql-elasticsearch \
+-v ./etc:/app/etc \
+-v mysql2es:/app \
+kuhufu/go-mysql-elasticsearch -log_level debug -config ./etc/river.toml
+```
 
 # 多平台构建
+```shell
 docker buildx create --driver=docker-container --name=container
 
 docker buildx build \
-  --builder=container  \
-  --tag=go-mysql-elasticsearch \
-  --target=prod \
-  --platform=linux/arm64,linux/amd64 .
-  
-# 清理none镜像
-docker rmi $(docker images -f dangling=true -q)
+--builder=container  \
+--tag=go-mysql-elasticsearch \
+--target=prod \
+--platform=linux/arm64,linux/amd64 \
+.
+```
 
 # 导出可执行文件
-docker build --target=binary --output=. --platform=darwin/arm64 .
+```shell
+docker buildx build \
+--builder=container \
+--target=binary \
+--output=./bin \
+--platform=darwin/arm64,linux/amd64 \
+.
 ```
+
 ## Docker Hub
 https://hub.docker.com/repository/docker/kuhufu/go-mysql-elasticsearch
 
