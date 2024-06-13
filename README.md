@@ -4,7 +4,7 @@ It uses `mysqldump` to fetch the origin data at first, then syncs data increment
 
 ## 调整
 1. 更新依赖包
-2. 重写Dockerfile，因为mariadb中的mysqldump对mysql8有兼容行问题
+2. 重写Dockerfile，因为mariadb中的mysqldump对mysql8有兼容性问题
 3. 对日志做了调整
 
 ## Docker启动
