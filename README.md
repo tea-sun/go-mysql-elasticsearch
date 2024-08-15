@@ -17,9 +17,9 @@ docker run kuhufu/go-mysql-elasticsearch
 ```shell
 docker run --rm \
 --name go-mysql-elasticsearch \
--v ./etc:/app/etc \
--v mysql2es:/app \
-kuhufu/go-mysql-elasticsearch -log_level debug -config ./etc/river.toml
+-v ./etc/river.toml:/app/etc/river.toml \
+-v mysql2es:/app/var \
+kuhufu/go-mysql-elasticsearch -log_level debug
 ```
 
 # 多平台构建

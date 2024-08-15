@@ -1,7 +1,6 @@
 ARG GO_VERSION=1.21
-ARG MYSQL_VERSION=8.0.35
 
-FROM --platform=$BUILDPLATFORM golang:${GO_VERSION}-alpine as base
+FROM golang:${GO_VERSION}-alpine as base
 
 # 配置go代理
 ENV GOPROXY=https://goproxy.cn
@@ -21,17 +20,16 @@ COPY . .
 
 # 编译go程序
 RUN --mount=type=cache,target=/go/pkg/mod \
-#    --mount=type=bind,target=. \
     GOOS=$TARGETOS GOARCH=$TARGETARCH go build -v -o /bin/go-mysql-elasticsearch ./cmd/go-mysql-elasticsearch
 
 FROM scratch as binary
 COPY --from=build /bin/go-mysql-elasticsearch .
 
-FROM --platform=$TARGETPLATFORM  ubuntu:22.04 as prod
+FROM ubuntu:22.04 as prod
 
 # 安装mysql客户端
 RUN apt update && \
-    apt install -y mysql-client && \
+    apt install -y mysql-client=8.0.* && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
