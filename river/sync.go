@@ -487,6 +487,11 @@ func (r *River) doBulk(reqs []*elastic.BulkRequest) error {
 				}
 			}
 		}
+
+		// 批量提交失败
+		err = errors.Errorf("bulk batch operate error")
+		log.Errorf("sync docs err %v after binlog %s", err, r.canal.SyncedPosition())
+		return errors.Trace(err)
 	}
 
 	return nil
