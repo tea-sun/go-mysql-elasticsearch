@@ -98,7 +98,8 @@ func (h *eventHandler) OnGTID(header *replication.EventHeader, gtid mysql.GTIDSe
 }
 
 func (h *eventHandler) OnPosSynced(header *replication.EventHeader, pos mysql.Position, set mysql.GTIDSet, force bool) error {
-	return nil
+	h.r.syncCh <- posSaver{pos, force}
+	return h.r.ctx.Err()
 }
 
 func (h *eventHandler) String() string {
