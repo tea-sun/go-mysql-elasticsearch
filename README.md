@@ -28,7 +28,7 @@ docker buildx create --driver=docker-container --name=container
 
 docker buildx build \
 --builder=container  \
---tag=freecb/mysql2es:1.1.0 \
+--tag=go-mysql-elasticsearch \
 --target=prod \
 --platform=linux/arm64,linux/amd64 \
 --push \
