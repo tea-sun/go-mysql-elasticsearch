@@ -30,7 +30,7 @@ flavor = "mysql"
 
 # mysqldump execution path
 # if not set or empty, ignore mysqldump.
-#mysqldump = "mysqldump"
+mysqldump = "mysqldump"
 
 # if we have no privilege to use mysqldump with --master-data,
 # we must skip it.
