@@ -1,28 +1,28 @@
 # MySQL address, user and password
 # user must have replication privilege in MySQL.
-my_addr = "127.0.0.1:3306"
+my_addr = "localhost:3306"
 my_user = "root"
-my_pass = ""
-my_charset = "utf8"
+my_pass = "121212"
+my_charset = "utf8mb4"
 
 # Set true when elasticsearch use https
-#es_https = false
+es_https = true
 # Elasticsearch address
-es_addr = "127.0.0.1:9200"
+es_addr = "search-my-dev-es-gk3xlw4em4ufnr4emk57g2cp54.ap-southeast-1.es.amazonaws.com:443"
 # Elasticsearch user and password, maybe set by shield, nginx, or x-pack
-es_user = ""
-es_pass = ""
+es_user = "opensearch"
+es_pass = "$ClnS2LFzvynVwVMn"
 
 # Path to store data, like master.info, if not set or empty,
-# we must use this to support breakpoint resume syncing. 
-# TODO: support other storage, like etcd. 
-data_dir = "./var"
+# we must use this to support breakpoint resume syncing.
+# TODO: support other storage, like etcd.
+data_dir = "/Users/dk/workspace/rwadmin-api/runtime/"
 
 # Inner Http status address
 stat_addr = "127.0.0.1:12800"
 stat_path = "/metrics"
 
-# pseudo server id like a slave 
+# pseudo server id like a slave
 server_id = 1001
 
 # mysql or mariadb
@@ -30,7 +30,7 @@ flavor = "mysql"
 
 # mysqldump execution path
 # if not set or empty, ignore mysqldump.
-mysqldump = "mysqldump"
+#mysqldump = "mysqldump"
 
 # if we have no privilege to use mysqldump with --master-data,
 # we must skip it.
@@ -45,105 +45,88 @@ flush_bulk_time = "200ms"
 # Ignore table without primary key
 skip_no_pk_table = false
 
-# MySQL data source
+###------------------gen_replace_mark-------------------###
 [[source]]
-schema = "test"
+schema = "rw"
 
-# Only below tables will be synced into Elasticsearch.
-# "t_[0-9]{4}" is a wildcard table format, you can use it if you have many sub tables, like table_0000 - table_1023
-# I don't think it is necessary to sync all tables in a database.
-tables = ["t", "t_[0-9]{4}", "tfield", "tfilter"]
+tables = ["fund_records","users","user_actions","user_devices","user_wallets","orders","transactions","transaction_logs","transfers","merchant_recharges","exchanges","operation_msg","operation_msg_read"]
 
-# Below is for special rule mapping
-
-# Very simple example
-# 
-# desc t;
-# +-------+--------------+------+-----+---------+-------+
-# | Field | Type         | Null | Key | Default | Extra |
-# +-------+--------------+------+-----+---------+-------+
-# | id    | int(11)      | NO   | PRI | NULL    |       |
-# | name  | varchar(256) | YES  |     | NULL    |       |
-# +-------+--------------+------+-----+---------+-------+
-# 
-# The table `t` will be synced to ES index `test` and type `t`.
 [[rule]]
-schema = "test"
-table = "t"
-index = "test"
-type = "t"
+schema = "rw"
+table = "fund_records"
+index = "dk_test_fund_records"
+filter = ["id","userid","username","fund_id","type","serial_no","amount","_amount","relative_id","order_id","order_no","transaction_id","transaction_no","recharge_id","recharge_no","withdraw_id","withdraw_no","exchange_id","exchange_no","transfer_id","transfer_no","remark","created_at","updated_at"]
 
-# Wildcard table rule, the wildcard table must be in source tables 
-# All tables which match the wildcard format will be synced to ES index `test` and type `t`.
-# In this example, all tables must have same schema with above table `t`;
 [[rule]]
-schema = "test"
-table = "t_[0-9]{4}"
-index = "test"
-type = "t"
+schema = "rw"
+table = "users"
+index = "dk_test_users"
+filter = ["id","username","nickname","tel","account","merchant_id","third_id","status","last_login_ip","last_login_time","created_ip","created_at","updated_at"]
 
-# Simple field rule 
-#
-# desc tfield;
-# +----------+--------------+------+-----+---------+-------+
-# | Field    | Type         | Null | Key | Default | Extra |
-# +----------+--------------+------+-----+---------+-------+
-# | id       | int(11)      | NO   | PRI | NULL    |       |
-# | tags     | varchar(256) | YES  |     | NULL    |       |
-# | keywords | varchar(256) | YES  |     | NULL    |       |
-# +----------+--------------+------+-----+---------+-------+
-#
 [[rule]]
-schema = "test"
-table = "tfield"
-index = "test"
-type = "tfield"
+schema = "rw"
+table = "user_actions"
+index = "dk_test_user_actions"
+filter = ["id","userid","username","action","ip","created_at"]
 
-[rule.field]
-# Map column `id` to ES field `es_id`
-id="es_id"
-# Map column `tags` to ES field `es_tags` with array type 
-tags="es_tags,list"
-# Map column `keywords` to ES with array type
-keywords=",list"
-
-# Filter rule 
-#
-# desc tfilter;
-# +-------+--------------+------+-----+---------+-------+
-# | Field | Type         | Null | Key | Default | Extra |
-# +-------+--------------+------+-----+---------+-------+
-# | id    | int(11)      | NO   | PRI | NULL    |       |
-# | c1    | int(11)      | YES  |     | 0       |       |
-# | c2    | int(11)      | YES  |     | 0       |       |
-# | name  | varchar(256) | YES  |     | NULL    |       |
-# +-------+--------------+------+-----+---------+-------+
-#
 [[rule]]
-schema = "test"
-table = "tfilter"
-index = "test"
-type = "tfilter"
+schema = "rw"
+table = "user_devices"
+index = "dk_test_user_devices"
+filter = ["id","userid","username","client_id","device_id","device_brand","device_model","os_name","os_version","client_ip","created_at"]
 
-# Only sync following columns
-filter = ["id", "name"]
-
-# id rule
-#
-# desc tid_[0-9]{4};
-# +----------+--------------+------+-----+---------+-------+
-# | Field    | Type         | Null | Key | Default | Extra |
-# +----------+--------------+------+-----+---------+-------+
-# | id       | int(11)      | NO   | PRI | NULL    |       |
-# | tag      | varchar(256) | YES  |     | NULL    |       |
-# | desc     | varchar(256) | YES  |     | NULL    |       |
-# +----------+--------------+------+-----+---------+-------+
-#
 [[rule]]
-schema = "test"
-table = "tid_[0-9]{4}"
-index = "test"
-type = "t"
-# The es doc's id will be `id`:`tag`
-# It is useful for merge muliple table into one type while theses tables have same PK 
-id = ["id", "tag"]
+schema = "rw"
+table = "user_wallets"
+index = "dk_test_user_wallets"
+filter = ["id","userid","chain_id","currency_id","account","bk_user","created_at","updated_at"]
+
+[[rule]]
+schema = "rw"
+table = "orders"
+index = "dk_test_orders"
+filter = ["id","type","order_no","userid","username","status","available_amount","amount","lock_amount","finished_amount","fall_amount","accepts","split","split_amount","fee","third_id","created_at","updated_at"]
+
+[[rule]]
+schema = "rw"
+table = "transactions"
+index = "dk_test_transactions"
+filter = ["id","transaction_no","order_id","buyer_userid","buyer_username","buyer_wallet_id","seller_userid","seller_username","seller_wallet_id","chain_id","currency_id","amount","currency_amount","currency_fee","start_time","verified_time","finish_time","paid_time","confirm_time","cancel_time","cancel_type","suspend_time","suspend_type","status","third_id","created_at","updated_at"]
+
+[[rule]]
+schema = "rw"
+table = "transaction_logs"
+index = "dk_test_transaction_logs"
+filter = ["id","transaction_id","section","type","created_at"]
+
+[[rule]]
+schema = "rw"
+table = "transfers"
+index = "dk_test_transfers"
+filter = ["id","transfer_no","userid","username","account","from_userid","from_username","from_account","amount","fee","status","created_at","updated_at"]
+
+[[rule]]
+schema = "rw"
+table = "merchant_recharges"
+index = "dk_test_merchant_recharges"
+filter = ["id","merchant_id","userid","username","day","recharge_no","amount","real_amount","fee","add_time","end_time","status","ip","merchant_order_no","merchant_custom_name","merchant_custom_ip","created_at","updated_at"]
+
+[[rule]]
+schema = "rw"
+table = "exchanges"
+index = "dk_test_exchanges"
+filter = ["id","type","userid","username","channel_id","chain_id","currency_id","wallet_id","amount","real_amount","fee","add_time","end_time","trade_id","status","created_at","updated_at"]
+
+[[rule]]
+schema = "rw"
+table = "operation_msg"
+index = "dk_test_operation_msg"
+filter = ["id","is_global","title","content","user_id","created_at"]
+
+[[rule]]
+schema = "rw"
+table = "operation_msg_read"
+index = "dk_test_operation_msg_read"
+filter = ["id","msg_id","user_id","created_at"]
+
+###------------------gen_replace_mark_end-------------------###
