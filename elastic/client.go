@@ -97,9 +97,9 @@ func (r *BulkRequest) bulk(buf *bytes.Buffer) error {
 	if len(r.Index) > 0 {
 		metaData["_index"] = r.Index
 	}
-	if len(r.Type) > 0 {
-		metaData["_type"] = r.Type
-	}
+	//if len(r.Type) > 0 {
+	//	metaData["_type"] = r.Type
+	//}
 
 	if len(r.ID) > 0 {
 		metaData["_id"] = r.ID

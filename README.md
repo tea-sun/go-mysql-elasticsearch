@@ -10,7 +10,7 @@ It uses `mysqldump` to fetch the origin data at first, then syncs data increment
 ## Docker启动
 
 ```shell
-docker run kuhufu/go-mysql-elasticsearch
+docker run tea-sun/go-mysql-elasticsearch
 ```
 
 挂载配置文件
@@ -19,7 +19,7 @@ docker run --rm \
 --name go-mysql-elasticsearch \
 -v ./etc/river.toml:/app/etc/river.toml \
 -v mysql2es:/app/var \
-kuhufu/go-mysql-elasticsearch -log_level debug
+tea-sun/go-mysql-elasticsearch -log_level debug
 ```
 
 # 多平台构建
@@ -46,7 +46,7 @@ docker buildx build \
 ```
 
 ## Docker Hub
-https://hub.docker.com/repository/docker/kuhufu/go-mysql-elasticsearch
+https://hub.docker.com/repository/docker/tea-sun/go-mysql-elasticsearch
 
 ## Call for Committer/Maintainer
 Sorry that I have no enough time to maintain this project wholly, if you like this project and want to help me improve it continuously, please contact me through email (siddontang@gmail.com).
